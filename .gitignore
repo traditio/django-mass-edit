@@ -1,0 +1,14 @@
+.svn
+.buildpath
+.settings
+.project
+.idea
+*.pyc
+*.pyo
+log/*.log
+Thumbs.db
+/core
+rundev
+NEXT_ACTIONS
+/nbproject/
+/run
