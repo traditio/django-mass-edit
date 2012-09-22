@@ -8,12 +8,13 @@
       {{ line.errors }}
       {% for field in line %}
       <div{% if not line.fields|length_is:"1" %} class="field-box"{% endif %}>
-          <input type="checkbox" name="_mass_change_{{ field.field.name }}" /> {% trans "массово обновить" %}
           {% if field.is_checkbox %}
               {{ field.field }}{{ field.label_tag }}
           {% else %}
               {{ field.label_tag }}{{ field.field }}
           {% endif %}
+          &nbsp;
+          <input type="checkbox" name="_mass_change_{{ field.field.name }}" /> {% trans "Mass update selected records with this value" %}
           {% if field.field.field.help_text %}<p class="help">{{ field.field.field.help_text|safe }}</p>{% endif %}
       </div>
       {% endfor %}
