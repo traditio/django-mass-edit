@@ -31,6 +31,7 @@
 {% endif %}{% endif %}
 {% endblock %}
 <form {% if has_file_field %}enctype="multipart/form-data" {% endif %}action="{{ form_url }}" method="post" id="{{ opts.module_name }}_form">{% block form_top %}{% endblock %}
+{% csrf_token %}
 <div>
 {% if is_popup %}<input type="hidden" name="_popup" value="1" />{% endif %}
 {% if save_on_top %}{% include "admin/save_only_submit_line.html" %}{% endif %}
@@ -48,7 +49,7 @@
 {% block after_field_sets %}{% endblock %}
 
 {% for inline_admin_formset in inline_admin_formsets %}
-    <input type="checkbox" name="_mass_change_{{ inline_admin_formset.formset.prefix }}"> {% trans "Массовое редактирование" %}:
+    <input type="checkbox" name="_mass_change_{{ inline_admin_formset.formset.prefix }}"> {% trans "Mass Edit" %}:
     {% include inline_admin_formset.opts.template %}
 {% endfor %}
 
