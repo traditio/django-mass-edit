@@ -12,3 +12,5 @@ rundev
 NEXT_ACTIONS
 /nbproject/
 /run
+*.swp
+*.un~
