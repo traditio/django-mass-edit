@@ -54,7 +54,8 @@ def mass_change_selected(modeladmin, request, queryset):
     # print request.POST
     selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
     return redirect_to(request, url = '../%s-masschange/%s' % (modeladmin.model._meta.module_name, ','.join(selected)))
-mass_change_selected.short_description = u'Bulk update'
+
+mass_change_selected.short_description = _('Bulk update')
 
 def mass_change_view(request, app_name, model_name, object_ids):
     model = models.get_model(app_name, model_name)
