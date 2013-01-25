@@ -46,11 +46,6 @@ from django.views.generic.simple import redirect_to
 from django.forms.formsets import all_valid
 # import new
 
-urls = patterns('',
-    (r'(?P<app_name>[a-z]+)/(?P<model_name>[a-z]+)-masschange/(?P<object_ids>[0-9,]+)/$', 'massadmin.massadmin.mass_change_view'),
-    # (r'(?P<whatever>.*)', 'massadmin.massadmin.redirect_to_admin')
-)
-
 def redirect_to_admin(request, whatever):
     return redirect_to(request, url = 'admin/%s' % whatever)
 
@@ -59,7 +54,8 @@ def mass_change_selected(modeladmin, request, queryset):
     # print request.POST
     selected = request.POST.getlist(admin.ACTION_CHECKBOX_NAME)
     return redirect_to(request, url = '../%s-masschange/%s' % (modeladmin.model._meta.module_name, ','.join(selected)))
-mass_change_selected.short_description = u'Массовое редактирование'
+
+mass_change_selected.short_description = _('Bulk update')
 
 def mass_change_view(request, app_name, model_name, object_ids):
     model = models.get_model(app_name, model_name)
@@ -109,7 +105,6 @@ class MassAdmin(admin.ModelAdmin):
             'content_type_id': ContentType.objects.get_for_model(self.model).id,
             'save_as': self.save_as,
             'save_on_top': self.save_on_top,
-            'root_path': self.admin_site.root_path,
             'onclick_attrib': (opts.get_ordered_objects() and change and 'onclick="submitOrderForm();"' or ''),
         })
         context_instance = template.RequestContext(request, current_app=self.admin_site.name)
@@ -204,11 +199,12 @@ class MassAdmin(admin.ModelAdmin):
                 formset = FormSet(instance=obj, prefix=prefix)
                 formsets.append(formset)
             	
-            adminForm = helpers.AdminForm(form, self.get_fieldsets(request, obj), self.prepopulated_fields)
+            adminForm = helpers.AdminForm(form, self.get_fieldsets(request, obj), self.prepopulated_fields,
+                    readonly_fields=self.readonly_fields)
             media = self.media + adminForm.media
             	
             inline_admin_formsets = []
-            for inline, formset in zip(self.inline_instances, formsets):
+            for inline, formset in zip(self.inlines, formsets):
                 fieldsets = list(inline.get_fieldsets(request, obj))
                 inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
                 inline_admin_formsets.append(inline_admin_formset)
@@ -223,7 +219,6 @@ class MassAdmin(admin.ModelAdmin):
                 'media': mark_safe(media),
                 'inline_admin_formsets': inline_admin_formsets,
                 'errors': helpers.AdminErrorList(form, formsets),
-                'root_path': self.admin_site.root_path,
                 'app_label': opts.app_label,
                 'object_ids': comma_separated_object_ids,
             }
