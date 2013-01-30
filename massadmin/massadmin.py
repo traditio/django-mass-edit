@@ -204,7 +204,7 @@ class MassAdmin(admin.ModelAdmin):
             media = self.media + adminForm.media
             	
             inline_admin_formsets = []
-            for inline, formset in zip(self.inlines, formsets):
+            for inline, formset in zip(self.get_inline_instances(request), formsets):
                 fieldsets = list(inline.get_fieldsets(request, obj))
                 inline_admin_formset = helpers.InlineAdminFormSet(inline, formset, fieldsets)
                 inline_admin_formsets.append(inline_admin_formset)
